@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shreyas Lambe | Java Developer Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    video.bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.4);
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 30px 20px;
+    }
+    .sidebar h1 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .sidebar a {
+      display: block;
+      color: #fff;
+      padding: 10px 0;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    .sidebar a:hover {
+      color: #00c6ff;
+    }
+    .main-content {
+      margin-left: 240px;
+      padding: 40px 30px;
+      color: #fff;
+    }
+    .profile-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 20px;
+    }
+    section {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+    }
+    h2 {
+      color: #00c6ff;
+      margin-bottom: 15px;
+    }
+    ul li {
+      margin-left: 20px;
+      line-height: 1.6;
+    }
+    .project {
+      margin-bottom: 20px;
+    }
+    .social-links a {
+      color: #00c6ff;
+      margin-right: 15px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .interactive-form input,
+    .interactive-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+    }
+    .interactive-form button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #00c6ff;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop class="bg-video">
+    <source src="https://github.com/lambeshreyas/my_website/raw/main/1000369852.mp4" type="video/mp4">
+  </video> <div class="sidebar">
+    <img class="profile-image" src="https://github.com/lambeshreyas/my_website/raw/main/1689.jpg" alt="Shreyas Profile" />
+    <h1>Shreyas Lambe</h1>
+    <a href="#about"><i class="fas fa-user"></i> About</a>
+    <a href="#skills"><i class="fas fa-cogs"></i> Skills</a>
+    <a href="#projects"><i class="fas fa-code"></i> Projects</a>
+    <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+  </div> <div class="main-content">
+    <section id="about">
+      <h2>About Me</h2>
+      <p>
+        I'm a Java Developer with 5+ years of experience in building scalable backend systems and microservices. I specialize in Spring Boot, Kafka, SQL, and real-time application architecture.
+      </p>
+    </section><section id="skills">
+  <h2>Technical Skills</h2>
+  <ul>
+    <li><strong>Languages:</strong> Java (8+), SQL, NoSQL</li>
+    <li><strong>Frameworks:</strong> Spring Boot, Hibernate, Morphia</li>
+    <li><strong>Databases:</strong> MySQL, PostgreSQL, MongoDB</li>
+    <li><strong>Tools:</strong> Kafka, RabbitMQ, ActiveMQ, Kibana, Git</li>
+    <li><strong>Others:</strong> Microservices, REST APIs, Maven, DSA</li>
+  </ul>
+</section>
+
+<section id="projects">
+  <h2>Projects</h2>
+  <div class="project">
+    <h3>AT&T ETL Data Migration</h3>
+    <p>Built scalable ETL microservices using Spring Boot and Kafka for high-speed legacy-to-cloud data migration.</p>
+  </div>
+  <div class="project">
+    <h3>PSI Examination Portal</h3>
+    <p>Developed secure backend services using Java, JSP, JDBC with Groovy-to-Java migration and integrated Kibana for monitoring.</p>
+  </div>
+  <div class="project">
+    <h3>Invoice & Account Manager</h3>
+    <p>REST API development with token-based authentication, Redis caching, and performance monitoring using Spring Boot and MongoDB.</p>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <p>Email: <a href="mailto:lambeshreyas@gmail.com">lambeshreyas@gmail.com</a></p>
+  <p>Phone: +91 9356525835</p>
+  <div class="social-links">
+    <a href="https://linkedin.com/in/shreyas-lambe" target="_blank"><i class="fab fa-linkedin"></i></a>
+    <a href="https://github.com/lambeshreyas" target="_blank"><i class="fab fa-github"></i></a>
+  </div>
+  <div class="interactive-form">
+    <h3>Send me a message:</h3>
+    <input type="text" placeholder="Your Name" />
+    <input type="email" placeholder="Your Email" />
+    <textarea rows="4" placeholder="Your Message"></textarea>
+    <button onclick="alert('Thanks for your message!')">Send</button>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 Shreyas Lambe | Designed with ❤
+</footer>
+
+  </div> <!-- Chatbot via Tidio --> <script src="//code.tidio.co/5z7ftg5ysak1ozmfd1cmxoo1e0zhqxqz.js" async></script></body>
+</html>
