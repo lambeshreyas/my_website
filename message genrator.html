@@ -9,12 +9,15 @@
     <!-- Configure Tailwind to use the Inter font (or system fallback) -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* Using Noto Sans for Marathi support */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Noto Sans', sans-serif;
             background-color: #f7f9fb;
         }
         .message-box {
             white-space: pre-wrap; /* Preserve formatting and line breaks */
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -22,7 +25,7 @@
 
     <div class="w-full max-w-4xl bg-white shadow-2xl rounded-xl p-6 md:p-10 border border-gray-100">
         <h1 class="text-3xl font-extrabold text-gray-800 mb-2">PTM Invitation Message Tool</h1>
-        <p class="text-gray-500 mb-8">Customize the details to generate, copy, and send the message instantly.</p>
+        <p class="text-gray-500 mb-8">Customize the details to generate, copy, and send the message instantly in English and Marathi.</p>
 
         <!-- Input Controls Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -50,8 +53,8 @@
             
             <!-- Primary WhatsApp Number Input -->
             <div>
-                <label for="phone-input" class="block text-sm font-medium text-gray-700 mb-1">Primary WhatsApp Number (e.g., 919876543210)</label>
-                <input type="tel" id="phone-input" placeholder="Country code required (no + or spaces)"
+                <label for="phone-input" class="block text-sm font-medium text-gray-700 mb-1">Primary WhatsApp Number (e.g., 9876543210)</label>
+                <input type="tel" id="phone-input" placeholder="10-digit mobile number"
                         class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out shadow-sm text-gray-800">
             </div>
 
@@ -59,7 +62,7 @@
             <div>
                 <label for="extra-phone-input" class="block text-sm font-medium text-gray-700 mb-1">Extra WhatsApp Number (Optional)</label>
                 <input type="tel" id="extra-phone-input" placeholder="Optional secondary number"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out shadow-sm text-gray-800">
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-150 ease-in-out shadow-sm text-gray-800">
             </div>
         </div>
 
@@ -114,19 +117,21 @@
 
     <script>
         // DOM Elements
-        const studentNameInput = document.getElementById('student-name-input'); // New
+        const studentNameInput = document.getElementById('student-name-input');
         const dateInput = document.getElementById('date-input');
         const timeInput = document.getElementById('time-input');
         const phoneInput = document.getElementById('phone-input');
-        const extraPhoneInput = document.getElementById('extra-phone-input'); // New
+        const extraPhoneInput = document.getElementById('extra-phone-input');
         const messageOutput = document.getElementById('message-output');
         const copyButton = document.getElementById('copy-button');
-        const whatsappButtonPrimary = document.getElementById('whatsapp-button-primary'); // Renamed
-        const whatsappButtonExtra = document.getElementById('whatsapp-button-extra'); // New
+        const whatsappButtonPrimary = document.getElementById('whatsapp-button-primary');
+        const whatsappButtonExtra = document.getElementById('whatsapp-button-extra');
         const statusMessage = document.getElementById('status-message');
 
-        // The base template for the message - Updated to use {STUDENT_NAME}
-        const TEMPLATE = `Dear parent of *{STUDENT_NAME}*
+        // --- Message Templates ---
+
+        // 1. English Template
+        const ENGLISH_TEMPLATE = `Dear parent of *{STUDENT_NAME}*
 
 *Allen Career Institute Latur - PNCF* Division is happy to welcome you to a *Mentors meet* session this Sunday.
 
@@ -142,11 +147,35 @@ DAMINI PIMPALSHENDE
 PNCF - BIOLOGY Faculty
 *Allen Career Institute, Latur*`;
 
-        // Function to format the date string (YYYY-MM-DD) into a readable format
+        // 2. Marathi Template (updated with placeholders)
+        const MARATHI_TEMPLATE = `
+---
+नमस्कार, मी दमिनी मॅडम, FNN-3 बॅचची मेंटर बोलते आहे. येणाऱ्या मेंटर्स मीटसाठी आपणास आमंत्रित करण्यासाठी हा संदेश आहे.
+
+आदरणीय *{STUDENT_NAME}* यांच्या पालकांना,
+
+Allen Career Institute, Latur – PNCF Division तर्फे या रविवारच्या *मेंटर्स मीट* साठी आपले मनःपूर्वक स्वागत आहे.
+
+दिनांक: {MARATHI_DATE}
+वेळ: {MARATHI_TIME}
+
+विषय: पुढील ३ महिन्यांत चिंता कशी कमी करायची आणि उत्तम निकालासाठी शिस्त कशी टिकवायची.
+
+आपली उपस्थिती Allen Laxmi Landmark कॅम्पसवर राहावी, ही विनंती.
+
+आपली,
+दमिनी पिंपळशेंडे
+PNCF – बायोलॉजी फॅकल्टी
+Allen Career Institute, Latur`;
+
+        // --- Formatting Functions ---
+
+        // Function to format the date string (YYYY-MM-DD) into a readable English format
         function formatReadableDate(dateString) {
             if (!dateString) return null;
             try {
-                const date = new Date(dateString + 'T00:00:00'); // Append T00:00:00 to avoid timezone issues
+                // Append T00:00:00 to avoid timezone issues during parsing
+                const date = new Date(dateString + 'T00:00:00'); 
                 return new Intl.DateTimeFormat('en-US', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -154,12 +183,12 @@ PNCF - BIOLOGY Faculty
                     day: 'numeric' 
                 }).format(date);
             } catch (e) {
-                console.error("Date formatting error:", e);
+                console.error("English Date formatting error:", e);
                 return dateString;
             }
         }
 
-        // Function to format the time string (HH:MM) into 12-hour format
+        // Function to format the time string (HH:MM) into 12-hour format (e.g., 11:00 AM)
         function formatReadableTime(timeString) {
             if (!timeString) return null;
             try {
@@ -173,10 +202,51 @@ PNCF - BIOLOGY Faculty
                     hour12: true 
                 }).format(date);
             } catch (e) {
-                console.error("Time formatting error:", e);
+                console.error("English Time formatting error:", e);
                 return timeString;
             }
         }
+
+        // Function to format the date/time string into Marathi format
+        function formatMarathiDateTime(dateString, timeString) {
+            if (!dateString || !timeString) return { date: null, time: null };
+
+            try {
+                // 1. Prepare Date object using date and time for correct formatting context
+                const [year, month, day] = dateString.split('-').map(Number);
+                const [hours, minutes] = timeString.split(':').map(Number);
+                const date = new Date(year, month - 1, day, hours, minutes);
+
+                // 2. Marathi Date Format: रविवार, ७ डिसेंबर २०२५
+                const marathiDate = new Intl.DateTimeFormat('mr-IN', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }).format(date);
+
+                // 3. Marathi Time Format: सकाळी ११:०० वा. (or संध्याकाळी)
+                const isAM = hours < 12;
+                const marathiTime = new Intl.DateTimeFormat('mr-IN', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true,
+                    // Use a 24-hour time string but add "वा." manually or rely on locale-specific markers if available
+                }).format(date);
+                
+                // Manually prepend सकाळ/संध्याकाळ and append वा. to ensure consistency
+                const timePrefix = isAM ? 'सकाळी' : 'संध्याकाळी';
+                const finalTime = `${timePrefix} ${marathiTime.replace(/\s(am|pm)/i, '').trim()} वा.`;
+
+
+                return { date: marathiDate, time: finalTime };
+
+            } catch (e) {
+                console.error("Marathi formatting error:", e);
+                return { date: dateString, time: timeString };
+            }
+        }
+
 
         // Function to generate and update the message
         function generateMessage() {
@@ -188,16 +258,26 @@ PNCF - BIOLOGY Faculty
             
             const formattedDate = formatReadableDate(dateValue);
             const formattedTime = formatReadableTime(timeValue);
+            const marathiFormats = formatMarathiDateTime(dateValue, timeValue);
             
             let isMessageReady = false;
             let finalMessage = "Please enter the student's name, select a date, and time.";
 
-            if (nameValue && formattedDate && formattedTime) {
-                // Replace placeholders in the template
-                finalMessage = TEMPLATE
-                    .replace('{STUDENT_NAME}', nameValue) // New replacement
+            if (nameValue && formattedDate && formattedTime && marathiFormats.date && marathiFormats.time) {
+                // 1. Generate English Message
+                const englishMessage = ENGLISH_TEMPLATE
+                    .replace('{STUDENT_NAME}', nameValue)
                     .replace('{DATE}', formattedDate)
                     .replace('{TIME}', formattedTime);
+                
+                // 2. Generate Marathi Message
+                const marathiMessage = MARATHI_TEMPLATE
+                    .replace('{STUDENT_NAME}', nameValue)
+                    .replace('{MARATHI_DATE}', marathiFormats.date)
+                    .replace('{MARATHI_TIME}', marathiFormats.time);
+
+                // 3. Combine them
+                finalMessage = englishMessage + marathiMessage;
                 
                 isMessageReady = true;
             }
@@ -207,13 +287,11 @@ PNCF - BIOLOGY Faculty
             // Check if essential fields are ready
             const isEssentialReady = isMessageReady;
             
-            // Check readiness for primary WhatsApp
-            const phonePrimaryReady = phoneValue.replace(/[^0-9]/g, '').length >= 10;
-            const whatsappPrimaryReady = isEssentialReady && phonePrimaryReady;
-
-            // Check readiness for extra WhatsApp
-            const phoneExtraReady = extraPhoneValue.replace(/[^0-9]/g, '').length >= 10;
-            const whatsappExtraReady = isEssentialReady && phoneExtraReady;
+            // Check readiness for WhatsApp buttons
+            const isPhoneNumberValid = (number) => number.replace(/[^0-9]/g, '').length >= 10;
+            
+            const whatsappPrimaryReady = isEssentialReady && isPhoneNumberValid(phoneValue);
+            const whatsappExtraReady = isEssentialReady && isPhoneNumberValid(extraPhoneValue);
 
 
             // Enable/Disable buttons based on readiness
@@ -269,13 +347,29 @@ PNCF - BIOLOGY Faculty
             document.body.removeChild(tempTextarea);
         }
         
+        // Function to sanitize phone number and ensure +91 country code for Indian numbers
+        function sanitizePhoneNumber(inputElement) {
+            const rawNumber = inputElement.value.replace(/[^0-9]/g, '');
+            // Check if it's a 10-digit number (standard Indian mobile format without CC)
+            if (rawNumber.length === 10) {
+                return '91' + rawNumber; // Prepend 91
+            }
+            // Check if it's 12 digits (already includes 91) or longer (already includes CC)
+            if (rawNumber.length >= 12 && rawNumber.startsWith('91')) {
+                return rawNumber;
+            }
+            // Otherwise, return the raw number (e.g., if it's not an Indian number or is an invalid length)
+            return rawNumber;
+        }
+
         // Function to handle sending WhatsApp message to a specific number field
         function sendWhatsAppMessage(phoneNumberElement, statusText) {
-            const phoneNumber = phoneNumberElement.value.replace(/[^0-9]/g, ''); 
+            // Get the sanitized number (guaranteed to include '91' for 10-digit inputs)
+            const phoneNumber = sanitizePhoneNumber(phoneNumberElement);
             const message = messageOutput.textContent;
             
-            if (!phoneNumber || !message) {
-                statusMessage.textContent = `Error: Cannot send. ${statusText} or message is missing.`;
+            if (phoneNumber.length < 10 || !message) {
+                statusMessage.textContent = `Error: Cannot send. Invalid ${statusText} or message is missing.`;
                 statusMessage.classList.remove('opacity-0', 'text-green-600');
                 statusMessage.classList.add('text-red-600');
                 setTimeout(() => {
@@ -286,11 +380,12 @@ PNCF - BIOLOGY Faculty
             }
 
             const encodedMessage = encodeURIComponent(message);
+            // wa.me requires the number without the leading '+'
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
             window.open(whatsappUrl, '_blank');
             
-            statusMessage.textContent = `Opening WhatsApp link for ${statusText}...`;
+            statusMessage.textContent = `Opening WhatsApp link for ${statusText} (${phoneNumber})...`;
             statusMessage.classList.remove('opacity-0', 'text-red-600');
             statusMessage.classList.add('text-green-600');
             setTimeout(() => {
@@ -298,12 +393,12 @@ PNCF - BIOLOGY Faculty
             }, 2000);
         }
 
-        // Event Listeners
-        studentNameInput.addEventListener('input', generateMessage); // New listener
+        // Event Listeners for all inputs to regenerate the message
+        studentNameInput.addEventListener('input', generateMessage);
         dateInput.addEventListener('change', generateMessage);
         timeInput.addEventListener('change', generateMessage);
         phoneInput.addEventListener('input', generateMessage);
-        extraPhoneInput.addEventListener('input', generateMessage); // New listener
+        extraPhoneInput.addEventListener('input', generateMessage);
         
         copyButton.addEventListener('click', copyMessage);
         
